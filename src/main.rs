@@ -2,6 +2,7 @@ use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::env;
 use dotenv::dotenv;
+use colored::Colorize;
 
 fn main() {
     dotenv().ok();
@@ -17,7 +18,7 @@ fn main() {
     let listener = TcpListener::bind(server_bind)
         .expect("Failed to bind the address.");
 
-    println!("The server is listening on {}:{}", server_host, server_port);
+    println!("{}", format!("The server is listening on {}:{}", server_host, server_port).green());
 
     for stream in listener.incoming() {
         match stream {
@@ -37,7 +38,7 @@ fn handle_client(mut stream: TcpStream) {
     stream.read(&mut buffer).expect("Failed to read from the client");
 
     let request = String::from_utf8_lossy(&buffer[..]);
-    println!("Received request: {request}");
+    println!("{}", format!("Received request: {request}").cyan());
 
     let response: &[u8] = "Hello, Client!".as_bytes();
     stream.write(response).expect("Failed to write the response!");
