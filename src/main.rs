@@ -1,11 +1,23 @@
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::env;
+use dotenv::dotenv;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8080")
+    dotenv().ok();
+
+    let server_host: String = env::var("SERVER_HOST")
+        .expect("The SERVER_HOST parameter is missing from the .env file.");
+
+    let server_port: String = env::var("SERVER_PORT")
+        .expect("The SERVER_PORT parameter is missing from the .env file.");
+
+    let server_bind = format!("{server_host}:{server_port}");
+
+    let listener = TcpListener::bind(server_bind)
         .expect("Failed to bind the address.");
 
-    println!("The server is listening on 127.0.0.1:8080");
+    println!("The server is listening on {}:{}", server_host, server_port);
 
     for stream in listener.incoming() {
         match stream {
